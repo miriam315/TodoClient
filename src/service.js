@@ -35,15 +35,21 @@ apiClient.interceptors.response.use(
 // 4. ייצוא פונקציות השירות
 export default {
   // התחברות
-  login: async (name, pas) => {
-    const response = await apiClient.post('/login', { name, pas });
+login: async (name, pas) => {
+    // השמות כאן חייבים להתאים בדיוק לשמות במחלקה User.cs ב-C#
+    const response = await apiClient.post('/login', { 
+        name: name,      // תואם ל-User.Name
+        password: pas    // תואם ל-User.Password
+    });
     localStorage.setItem('token', response.data.token);
     return response.data;
   },
 
-  // הרשמה
   register: async (name, pas) => {
-    return await apiClient.post('/register', { name, pas });
+    return await apiClient.post('/register', { 
+        name: name, 
+        password: pas 
+    });
   },
 
   // משימות (דורשות טוקן)

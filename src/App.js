@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import service from './service.js';
 
 function App() {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // שימוש ב-Hook לניווט
 
   async function getTodos() {
     try {
@@ -13,7 +15,6 @@ function App() {
       setTodos(data);
     } catch (error) {
       console.error("שגיאה בטעינת משימות", error);
-      // ה-Interceptor ב-service.js יטפל בהעברה ל-login במקרה של 401
     } finally {
       setLoading(false);
     }
@@ -37,15 +38,20 @@ function App() {
     await getTodos();
   }
 
+  // פונקציית התנתקות
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login'); // מעבר מנומס לדף התחברות
+  };
+
   useEffect(() => {
-    // בדיקה אם יש טוקן לפני ניסיון טעינה
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.href = '/login';
+      navigate('/login'); // ניווט לדף התחברות אם אין טוקן
     } else {
       getTodos();
     }
-  }, []);
+  }, [navigate]);
 
   if (loading && localStorage.getItem('token')) {
     return <div>טוען משימות...</div>;
@@ -55,7 +61,7 @@ function App() {
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        <button onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }}>התנתק</button>
+        <button onClick={handleLogout}>התנתק</button>
         <form onSubmit={createTodo}>
           <input 
             className="new-todo" 
