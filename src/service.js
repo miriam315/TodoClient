@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 1. יצירת מופע של axios עם כתובת הבסיס של השרת
 const apiClient = axios.create({
-  baseURL: "https://localhost:7039"
+  baseURL: REACT_APP_CUSTOM_API_URL
 });
 
 // 2. Interceptor לבקשות (Request) - הוספת הטוקן לכל בקשה
